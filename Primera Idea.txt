@@ -1,0 +1,42 @@
+Job Tracker Extensión
+Problema y objetivo:
+Problema: Quienes buscan trabajo en Argentina usan múltiples plataformas (Indeed, Computrabajo, Bumeran, ZonaJobs, LinkedIn, Empleos IT) y pierden el control de qué postularon, desde dónde, con qué CV y en qué estado está cada proceso.
+Objetivo: Una extensión de Chrome que funcione como panel de control personal de postulaciones, sin reemplazar las plataformas, sino acompañando su uso.
+
+Funcionalidades de la primera versión:
+Detectar automáticamente en qué portal está el usuario y capturar la URL de la oferta
+Formulario rápido para cargar: empresa, puesto, portal, CV usado, estado y una nota
+Alerta si esa empresa ya fue guardada antes (anti-duplicado)
+Lista de todas las postulaciones con filtro por estado
+Todo guardado localmente en el navegador, sin servidor ni login
+
+Estados posibles: Guardado / Aplicado / En proceso / Rechazado / Sin respuesta
+
+Portales soportados en v1
+
+Indeed (ar.indeed.com)
+Computrabajo (ar.computrabajo.com)
+Bumeran (bumeran.com)
+ZonaJobs (zonajobs.com.ar)
+LinkedIn (linkedin.com/jobs)
+Empleos IT (empleosit.com.ar)
+
+Estructura técnica
+Archivos necesarios:
+
+manifest.json — configuración de la extensión y permisos
+popup.html — interfaz del panel
+popup.js — lógica del formulario y la lista
+content.js — script que corre en el portal y captura URL y nombre de empresa
+styles.css — estilos del panel
+
+Almacenamiento: chrome.storage.local — nativo del navegador, sin base de datos externa
+Permisos necesarios en el manifest: storage, activeTab, scripting
+
+Lo que queda fuera de la v1
+
+Login o sincronización entre dispositivos
+Integración con APIs externas
+Scraping automático de la descripción de la oferta
+Versión móvil
+Notificaciones o recordatorios
