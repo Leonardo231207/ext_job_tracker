@@ -1,0 +1,55 @@
+{
+  "manifest_version": 3,
+  "name": "Job Tracker AR",
+  "version": "1.0",
+  "description": "Panel de control personal de postulaciones laborales en Argentina",
+  "permissions": ["storage"],
+  "host_permissions": [
+    "https://ar.indeed.com/*",
+    "https://www.indeed.com/*",
+    "https://ar.computrabajo.com/*",
+    "https://www.computrabajo.com.ar/*",
+    "https://www.bumeran.com.ar/*",
+    "https://bumeran.com.ar/*",
+    "https://www.zonajobs.com.ar/*",
+    "https://zonajobs.com.ar/*",
+    "https://www.linkedin.com/jobs/*",
+    "https://linkedin.com/jobs/*",
+    "https://www.empleosit.com.ar/*",
+    "https://empleosit.com.ar/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Job Tracker AR",
+    "default_icon": {
+      "16": "icon.png",
+      "48": "icon.png",
+      "128": "icon.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://ar.indeed.com/*",
+        "https://www.indeed.com/*",
+        "https://ar.computrabajo.com/*",
+        "https://www.computrabajo.com.ar/*",
+        "https://www.bumeran.com.ar/*",
+        "https://bumeran.com.ar/*",
+        "https://www.zonajobs.com.ar/*",
+        "https://zonajobs.com.ar/*",
+        "https://www.linkedin.com/jobs/*",
+        "https://linkedin.com/jobs/*",
+        "https://www.empleosit.com.ar/*",
+        "https://empleosit.com.ar/*"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "icons": {
+    "16": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
+  }
+}

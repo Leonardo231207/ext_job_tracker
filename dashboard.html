@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard - Job Tracker AR</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="dashboard-container">
+    <div class="dashboard-header">
+      <h1>
+        <span class="logo">JT</span>
+        Job Tracker AR
+      </h1>
+      <button class="btn-primary" id="btnNueva">+ Nueva postulación</button>
+    </div>
+
+    <div class="filtros-bar">
+      <select id="filtroEstado">
+        <option value="todos">Todos los estados</option>
+        <option value="guardado">Guardado</option>
+        <option value="aplicado">Aplicado</option>
+        <option value="en_proceso">En proceso</option>
+        <option value="rechazado">Rechazado</option>
+        <option value="sin_respuesta">Sin respuesta</option>
+      </select>
+      <select id="filtroPortal">
+        <option value="todos">Todos los portales</option>
+        <option value="indeed">Indeed</option>
+        <option value="computrabajo">Computrabajo</option>
+        <option value="bumeran">Bumeran</option>
+        <option value="zonajobs">ZonaJobs</option>
+        <option value="linkedin">LinkedIn</option>
+        <option value="empleosit">Empleos IT</option>
+        <option value="manual">Otro / Manual</option>
+      </select>
+      <select id="filtroModalidad">
+        <option value="todos">Todas las modalidades</option>
+        <option value="remoto">Remoto</option>
+        <option value="hibrido">Híbrido</option>
+        <option value="presencial">Presencial</option>
+      </select>
+      <button class="btn-secondary btn-sm" id="btnExportar">Exportar CSV</button>
+    </div>
+
+    <div class="result-count" id="resultCount"></div>
+
+    <div class="tabla-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Empresa</th>
+            <th>Puesto</th>
+            <th>Portal</th>
+            <th>Estado</th>
+            <th>Remuneración</th>
+            <th>Modalidad</th>
+            <th>Fecha</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="tablaBody"></tbody>
+      </table>
+    </div>
+    <div class="empty-state" id="emptyState" style="display:none;">
+      No hay postulaciones que coincidan con los filtros
+    </div>
+  </div>
+
+  <!-- Modal de detalle -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modalTitulo">Detalle</h2>
+        <button class="modal-close" id="modalCerrar">&times;</button>
+      </div>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <script src="dashboard.js"></script>
+</body>
+</html>
