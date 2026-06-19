@@ -150,19 +150,6 @@ function limpiarFormulario() {
   document.getElementById('duplicateAlert').classList.remove('show')
 }
 
-async function llenarCamposVaciosConCapturados(captured) {
-  if (!captured) return
-  if (captured.empresa && !document.getElementById('empresa').value) {
-    document.getElementById('empresa').value = captured.empresa
-  }
-  if (captured.portal && captured.portal !== 'manual') {
-    document.getElementById('portal').value = captured.portal
-  }
-  if (captured.url && !document.getElementById('url').value) {
-    document.getElementById('url').value = captured.url
-  }
-}
-
 document.addEventListener('DOMContentLoaded', async function () {
   var draft = await obtenerDraft()
   var captured = await obtenerDatosCapturados()
@@ -173,19 +160,9 @@ document.addEventListener('DOMContentLoaded', async function () {
     document.getElementById('detectedUrl').textContent = captured.url || '—'
   }
 
-  if (draft) {
-    restaurarFormulario(draft)
-    var capturedEsReciente = captured && (Date.now() - captured.timestamp < 30000)
-    var capturedEsNuevo = capturedEsReciente && captured.timestamp > (draft._guardadoEn || 0)
-    if (capturedEsNuevo) {
-      if (captured.empresa) document.getElementById('empresa').value = captured.empresa
-      if (captured.portal && captured.portal !== 'manual') document.getElementById('portal').value = captured.portal
-      if (captured.url) document.getElementById('url').value = captured.url
-      await limpiarDraft()
-    } else {
-      await llenarCamposVaciosConCapturados(captured)
-    }
-  } else if (captured) {
+  if (draft) restaurarFormulario(draft)
+
+  if (captured) {
     if (captured.empresa) document.getElementById('empresa').value = captured.empresa
     if (captured.portal && captured.portal !== 'manual') document.getElementById('portal').value = captured.portal
     if (captured.url) document.getElementById('url').value = captured.url
