@@ -1,4 +1,4 @@
-const ESTADOS_MAP = {
+var ESTADOS_MAP = {
   guardado: 'Guardado',
   aplicado: 'Aplicado',
   en_proceso: 'En proceso',
@@ -6,7 +6,7 @@ const ESTADOS_MAP = {
   sin_respuesta: 'Sin respuesta'
 }
 
-const PORTALES_MAP = {
+var PORTALES_MAP = {
   indeed: 'Indeed',
   computrabajo: 'Computrabajo',
   bumeran: 'Bumeran',
@@ -41,6 +41,59 @@ async function obtenerPostulaciones() {
 async function obtenerDatosCapturados() {
   var result = await chrome.storage.local.get('_captured')
   return result._captured || null
+}
+
+async function obtenerDraft() {
+  var result = await chrome.storage.local.get('_formDraft')
+  return result._formDraft || null
+}
+
+function recolectarFormulario() {
+  return {
+    empresa: document.getElementById('empresa').value,
+    puesto: document.getElementById('puesto').value,
+    portal: document.getElementById('portal').value,
+    url: document.getElementById('url').value,
+    remuneracion: document.getElementById('remuneracion').value,
+    descripcion: document.getElementById('descripcion').value,
+    cv_usado: document.getElementById('cv_usado').value,
+    modalidad: document.getElementById('modalidad').value,
+    ubicacion: document.getElementById('ubicacion').value,
+    contacto: document.getElementById('contacto').value,
+    estado: document.getElementById('estado').value,
+    nota: document.getElementById('nota').value
+  }
+}
+
+function restaurarFormulario(d) {
+  if (!d) return
+  if (d.empresa !== undefined) document.getElementById('empresa').value = d.empresa
+  if (d.puesto !== undefined) document.getElementById('puesto').value = d.puesto
+  if (d.portal !== undefined) document.getElementById('portal').value = d.portal
+  if (d.url !== undefined) document.getElementById('url').value = d.url
+  if (d.remuneracion !== undefined) document.getElementById('remuneracion').value = d.remuneracion
+  if (d.descripcion !== undefined) document.getElementById('descripcion').value = d.descripcion
+  if (d.cv_usado !== undefined) document.getElementById('cv_usado').value = d.cv_usado
+  if (d.modalidad !== undefined) document.getElementById('modalidad').value = d.modalidad
+  if (d.ubicacion !== undefined) document.getElementById('ubicacion').value = d.ubicacion
+  if (d.contacto !== undefined) document.getElementById('contacto').value = d.contacto
+  if (d.estado !== undefined) document.getElementById('estado').value = d.estado
+  if (d.nota !== undefined) document.getElementById('nota').value = d.nota
+}
+
+var draftTimeout = null
+
+function programarDraft() {
+  if (draftTimeout) clearTimeout(draftTimeout)
+  draftTimeout = setTimeout(function () {
+    var datos = recolectarFormulario()
+    datos._guardadoEn = Date.now()
+    chrome.storage.local.set({ _formDraft: datos })
+  }, 250)
+}
+
+async function limpiarDraft() {
+  await chrome.storage.local.remove('_formDraft')
 }
 
 async function guardarPostulacion(data) {
@@ -97,14 +150,42 @@ function limpiarFormulario() {
   document.getElementById('duplicateAlert').classList.remove('show')
 }
 
+async function llenarCamposVaciosConCapturados(captured) {
+  if (!captured) return
+  if (captured.empresa && !document.getElementById('empresa').value) {
+    document.getElementById('empresa').value = captured.empresa
+  }
+  if (captured.portal && captured.portal !== 'manual') {
+    document.getElementById('portal').value = captured.portal
+  }
+  if (captured.url && !document.getElementById('url').value) {
+    document.getElementById('url').value = captured.url
+  }
+}
+
 document.addEventListener('DOMContentLoaded', async function () {
+  var draft = await obtenerDraft()
   var captured = await obtenerDatosCapturados()
 
   if (captured) {
     document.getElementById('detectedPortal').textContent = PORTALES_MAP[captured.portal] || captured.portal || '—'
     document.getElementById('detectedCompany').textContent = captured.empresa || '—'
     document.getElementById('detectedUrl').textContent = captured.url || '—'
+  }
 
+  if (draft) {
+    restaurarFormulario(draft)
+    var capturedEsReciente = captured && (Date.now() - captured.timestamp < 30000)
+    var capturedEsNuevo = capturedEsReciente && captured.timestamp > (draft._guardadoEn || 0)
+    if (capturedEsNuevo) {
+      if (captured.empresa) document.getElementById('empresa').value = captured.empresa
+      if (captured.portal && captured.portal !== 'manual') document.getElementById('portal').value = captured.portal
+      if (captured.url) document.getElementById('url').value = captured.url
+      await limpiarDraft()
+    } else {
+      await llenarCamposVaciosConCapturados(captured)
+    }
+  } else if (captured) {
     if (captured.empresa) document.getElementById('empresa').value = captured.empresa
     if (captured.portal && captured.portal !== 'manual') document.getElementById('portal').value = captured.portal
     if (captured.url) document.getElementById('url').value = captured.url
@@ -141,6 +222,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
 
     await guardarPostulacion(data)
+    await limpiarDraft()
     limpiarFormulario()
     await renderRecent()
     await chrome.storage.local.remove('_captured')
@@ -150,16 +232,23 @@ document.addEventListener('DOMContentLoaded', async function () {
     document.getElementById('detectedUrl').textContent = '—'
   })
 
-  document.getElementById('btnLimpiar').addEventListener('click', function () {
+  document.getElementById('btnLimpiar').addEventListener('click', async function () {
     limpiarFormulario()
     document.getElementById('duplicateAlert').classList.remove('show')
+    await limpiarDraft()
   })
 
   document.getElementById('btnDashboard').addEventListener('click', function () {
-    chrome.tabs.create({ url: 'dashboard.html' })
+    chrome.tabs.create({ url: 'dashboard/dashboard.html' })
   })
 
   document.getElementById('empresa').addEventListener('input', function () {
     document.getElementById('duplicateAlert').classList.remove('show')
   })
+
+  var inputs = document.querySelectorAll('#jobForm input, #jobForm select, #jobForm textarea')
+  for (var i = 0; i < inputs.length; i++) {
+    inputs[i].addEventListener('input', programarDraft)
+    inputs[i].addEventListener('change', programarDraft)
+  }
 })

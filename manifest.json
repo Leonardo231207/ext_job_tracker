@@ -19,12 +19,12 @@
     "https://empleosit.com.ar/*"
   ],
   "action": {
-    "default_popup": "popup.html",
+    "default_popup": "popup/popup.html",
     "default_title": "Job Tracker AR",
     "default_icon": {
-      "16": "icon.png",
-      "48": "icon.png",
-      "128": "icon.png"
+      "16": "icons/icon.png",
+      "48": "icons/icon.png",
+      "128": "icons/icon.png"
     }
   },
   "content_scripts": [
@@ -43,13 +43,13 @@
         "https://www.empleosit.com.ar/*",
         "https://empleosit.com.ar/*"
       ],
-      "js": ["content.js"],
+      "js": ["scripts/content.js"],
       "run_at": "document_idle"
     }
   ],
   "icons": {
-    "16": "icon.png",
-    "48": "icon.png",
-    "128": "icon.png"
+    "16": "icons/icon.png",
+    "48": "icons/icon.png",
+    "128": "icons/icon.png"
   }
 }

@@ -23,13 +23,20 @@ Soporta: Indeed, Computrabajo, Bumeran, ZonaJobs, LinkedIn, Empleos IT.
 ## Estructura
 
 ```
-├── manifest.json      Configuración de la extensión
-├── popup.html/js      Formulario rápido de carga
-├── dashboard.html/js  Panel completo con filtros y detalle
-├── content.js         Detección de portal y empresa
-├── styles.css         Estilos compartidos
-├── icon.png           Ícono placeholder
-└── README.md
+├── manifest.json          Configuración de la extensión
+├── README.md
+├── icons/
+│   └── icon.png           Ícono placeholder
+├── styles/
+│   └── styles.css         Estilos compartidos
+├── popup/
+│   ├── popup.html         Formulario rápido de carga
+│   └── popup.js           Lógica del popup + draft persistence
+├── dashboard/
+│   ├── dashboard.html     Panel completo con tabla y filtros
+│   └── dashboard.js       Lógica del dashboard
+└── scripts/
+    └── content.js         Detección de portal y empresa
 ```
 
 ## Stack
