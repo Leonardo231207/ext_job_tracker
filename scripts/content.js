@@ -73,6 +73,8 @@ function extraerEmpresa() {
       selectores = [
         '[class*="company"]',
         '[class*="empresa"]',
+        '[class*="CompanyHeader"]',
+        '[class*="employer"]',
         '.panel-body h2',
         'h2'
       ]
@@ -103,28 +105,8 @@ function guardarDatos() {
   })
 }
 
-var timeoutId = null
-
-function guardarDatosDebounced() {
-  if (timeoutId) clearTimeout(timeoutId)
-  timeoutId = setTimeout(guardarDatos, 800)
-}
-
 guardarDatos()
-
-var reintentos = [1200, 3000, 6000]
-for (var i = 0; i < reintentos.length; i++) {
-  setTimeout(guardarDatos, reintentos[i])
-}
-
-var observer = new MutationObserver(guardarDatosDebounced)
-observer.observe(document.body, {
-  childList: true,
-  subtree: true
-})
-
-setTimeout(function () {
-  observer.disconnect()
-}, 25000)
-
+setTimeout(guardarDatos, 1500)
+setTimeout(guardarDatos, 4000)
+setTimeout(guardarDatos, 8000)
 window.addEventListener('popstate', guardarDatos)
