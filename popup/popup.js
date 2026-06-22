@@ -1,9 +1,9 @@
 var ESTADOS_MAP = {
   guardado: 'Guardado',
-  aplicado: 'Aplicado',
-  en_proceso: 'En proceso',
-  rechazado: 'Rechazado',
-  sin_respuesta: 'Sin respuesta'
+  postulado: 'Postulado',
+  entrevistado: 'Entrevistado',
+  sin_respuesta: 'Sin respuesta',
+  rechazado: 'Rechazado'
 }
 
 var PORTALES_MAP = {
@@ -106,6 +106,25 @@ async function guardarPostulacion(data) {
   return data
 }
 
+async function migrarEstados() {
+  var result = await chrome.storage.local.get('applications')
+  var apps = result.applications || []
+  var modificado = false
+  for (var i = 0; i < apps.length; i++) {
+    if (apps[i].estado === 'aplicado') {
+      apps[i].estado = 'postulado'
+      modificado = true
+    }
+    if (apps[i].estado === 'en_proceso') {
+      apps[i].estado = 'entrevistado'
+      modificado = true
+    }
+  }
+  if (modificado) {
+    await chrome.storage.local.set({ applications: apps })
+  }
+}
+
 async function existeEmpresa(empresa, ignorarId) {
   if (!empresa) return false
   var postulaciones = await obtenerPostulaciones()
@@ -151,6 +170,7 @@ function limpiarFormulario() {
 }
 
 document.addEventListener('DOMContentLoaded', async function () {
+  await migrarEstados()
   var draft = await obtenerDraft()
   var captured = await obtenerDatosCapturados()
 

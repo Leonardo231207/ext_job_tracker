@@ -1,9 +1,9 @@
 var ESTADOS_MAP = {
   guardado: 'Guardado',
-  aplicado: 'Aplicado',
-  en_proceso: 'En proceso',
-  rechazado: 'Rechazado',
-  sin_respuesta: 'Sin respuesta'
+  postulado: 'Postulado',
+  entrevistado: 'Entrevistado',
+  sin_respuesta: 'Sin respuesta',
+  rechazado: 'Rechazado'
 }
 
 var PORTALES_MAP = {
@@ -212,8 +212,8 @@ function renderizarDetalle(post) {
       '<button class="btn-secondary" id="detalleVolver">Volver</button>' +
       '<select id="detalleCambioEstado" style="width:auto;">' +
         '<option value="guardado"' + (post.estado === 'guardado' ? ' selected' : '') + '>Guardado</option>' +
-        '<option value="aplicado"' + (post.estado === 'aplicado' ? ' selected' : '') + '>Aplicado</option>' +
-        '<option value="en_proceso"' + (post.estado === 'en_proceso' ? ' selected' : '') + '>En proceso</option>' +
+        '<option value="postulado"' + (post.estado === 'postulado' ? ' selected' : '') + '>Postulado</option>' +
+        '<option value="entrevistado"' + (post.estado === 'entrevistado' ? ' selected' : '') + '>Entrevistado</option>' +
         '<option value="rechazado"' + (post.estado === 'rechazado' ? ' selected' : '') + '>Rechazado</option>' +
         '<option value="sin_respuesta"' + (post.estado === 'sin_respuesta' ? ' selected' : '') + '>Sin respuesta</option>' +
       '</select>' +
@@ -311,8 +311,8 @@ function renderizarFormularioEdicion(post) {
           '<label for="editEstado">Estado *</label>' +
           '<select id="editEstado" required>' +
             '<option value="guardado"' + (post.estado === 'guardado' ? ' selected' : '') + '>Guardado</option>' +
-            '<option value="aplicado"' + (post.estado === 'aplicado' ? ' selected' : '') + '>Aplicado</option>' +
-            '<option value="en_proceso"' + (post.estado === 'en_proceso' ? ' selected' : '') + '>En proceso</option>' +
+            '<option value="postulado"' + (post.estado === 'postulado' ? ' selected' : '') + '>Postulado</option>' +
+            '<option value="entrevistado"' + (post.estado === 'entrevistado' ? ' selected' : '') + '>Entrevistado</option>' +
             '<option value="rechazado"' + (post.estado === 'rechazado' ? ' selected' : '') + '>Rechazado</option>' +
             '<option value="sin_respuesta"' + (post.estado === 'sin_respuesta' ? ' selected' : '') + '>Sin respuesta</option>' +
           '</select>' +
@@ -434,8 +434,8 @@ function renderizarFormularioNuevo() {
           '<label for="nuevoEstado">Estado *</label>' +
           '<select id="nuevoEstado" required>' +
             '<option value="guardado">Guardado</option>' +
-            '<option value="aplicado">Aplicado</option>' +
-            '<option value="en_proceso">En proceso</option>' +
+            '<option value="postulado">Postulado</option>' +
+            '<option value="entrevistado">Entrevistado</option>' +
             '<option value="rechazado">Rechazado</option>' +
             '<option value="sin_respuesta">Sin respuesta</option>' +
           '</select>' +
@@ -521,7 +521,27 @@ function exportarCSV() {
   URL.revokeObjectURL(url)
 }
 
+async function migrarEstados() {
+  var result = await chrome.storage.local.get('applications')
+  var apps = result.applications || []
+  var modificado = false
+  for (var i = 0; i < apps.length; i++) {
+    if (apps[i].estado === 'aplicado') {
+      apps[i].estado = 'postulado'
+      modificado = true
+    }
+    if (apps[i].estado === 'en_proceso') {
+      apps[i].estado = 'entrevistado'
+      modificado = true
+    }
+  }
+  if (modificado) {
+    await chrome.storage.local.set({ applications: apps })
+  }
+}
+
 document.addEventListener('DOMContentLoaded', async function () {
+  await migrarEstados()
   await cargarYRenderizar()
 
   document.getElementById('filtroEstado').addEventListener('change', aplicarFiltros)

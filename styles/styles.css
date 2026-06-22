@@ -249,28 +249,28 @@ button:active {
 }
 
 .estado-badge.guardado {
-  background: #e8edf9;
-  color: #1e50c8;
+  background: #e0e7ff;
+  color: #3730a3;
 }
 
-.estado-badge.aplicado {
-  background: #e0f2e9;
-  color: #1a7a5c;
+.estado-badge.postulado {
+  background: #d1fae5;
+  color: #065f46;
 }
 
-.estado-badge.en_proceso {
-  background: #fef3d5;
-  color: #b8860b;
+.estado-badge.entrevistado {
+  background: #ffedd5;
+  color: #9a3412;
+}
+
+.estado-badge.sin_respuesta {
+  background: #f3f4f6;
+  color: #6b7280;
 }
 
 .estado-badge.rechazado {
   background: #fde8e8;
   color: #b91c1c;
-}
-
-.estado-badge.sin_respuesta {
-  background: var(--gray-100);
-  color: var(--gray-500);
 }
 
 .duplicate-alert {
