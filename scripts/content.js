@@ -110,3 +110,18 @@ setTimeout(guardarDatos, 1500)
 setTimeout(guardarDatos, 4000)
 setTimeout(guardarDatos, 8000)
 window.addEventListener('popstate', guardarDatos)
+
+;(function () {
+  var methods = ['pushState', 'replaceState']
+  for (var i = 0; i < methods.length; i++) {
+    ;(function (m) {
+      var original = history[m]
+      history[m] = function () {
+        var result = original.apply(this, arguments)
+        setTimeout(guardarDatos, 1500)
+        setTimeout(guardarDatos, 4000)
+        return result
+      }
+    })(methods[i])
+  }
+})()
